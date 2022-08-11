@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,11 +21,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.iss.team1.safe.checkin.utils.HttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "IdTokenActivity";
     private static final int RC_GET_TOKEN = 9002;
+    private static final String authURL = "https://checkin-sg-stay-safe-org.ap-southeast-1.elasticbeanstalk.com/authentication";
 
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mIdTokenTextView;
@@ -133,8 +142,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // TODO(developer): send ID Token to server and validate
             Log.i("get ID token: ", idToken);
+            SharedPreferences prefs = getSharedPreferences("safeStore", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("idToken", idToken);
+            editor.commit();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("idToken", idToken);
+//            HttpUtil.jsonPost(authURL, jsonObject.toString());
             updateUI(account);
-        } catch (ApiException e) {
+        } catch (ApiException | JSONException e) {
             Log.w(TAG, "handleSignInResult:error", e);
             updateUI(null);
         }
