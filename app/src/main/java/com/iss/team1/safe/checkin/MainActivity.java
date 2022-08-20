@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.iss.team1.safe.checkin.model.SafeResponse;
+import com.iss.team1.safe.checkin.utils.HashUtil;
 import com.iss.team1.safe.checkin.utils.HttpUtil;
+import com.iss.team1.safe.checkin.utils.HttpsUtil;
+import com.iss.team1.safe.checkin.utils.JsonUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
+            String email = account.getEmail();
 
             // TODO(developer): send ID Token to server and validate
             Log.i("get ID token: ", idToken);
@@ -146,11 +152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("idToken", idToken);
             editor.commit();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("idToken", idToken);
-//            HttpUtil.jsonPost(authURL, jsonObject.toString());
+            new MyTask().execute(email, idToken);
             updateUI(account);
-        } catch (ApiException | JSONException e) {
+        } catch (Exception e) {
             Log.w(TAG, "handleSignInResult:error", e);
             updateUI(null);
         }
@@ -200,6 +204,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button_optional_action:
                 refreshIdToken();
                 break;
+        }
+    }
+
+    private class MyTask extends AsyncTask<String, Void, Void> {
+        String resultMsg = "";
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String email = strings[0];
+            String idToken = strings[1];
+
+            try {
+                String hashEmail = HashUtil.hashSha256(email);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("idToken", idToken);
+                jsonObject.put("anonymousId", hashEmail);
+                String respStr = HttpsUtil.jsonPost(authURL, jsonObject.toString());
+                Log.i("Auth respStr", respStr);
+                SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
+                if (response.getCode() != SafeResponse.RESPONSE_CODE_SUCCESS) {
+                    resultMsg = response.getMsg();
+                }
+            } catch (Exception e) {
+                Log.e("Auth api invoke error: ", e.toString());
+                resultMsg = "Auth unsuccessfully...";
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, resultMsg, duration);
+            toast.show();
         }
     }
 }
