@@ -1,5 +1,10 @@
 package com.iss.team1.safe.checkin.utils;
 
+import android.app.Application;
+import android.content.Context;
+
+import com.iss.team1.safe.checkin.R;
+
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 
 import java.io.BufferedWriter;
@@ -42,6 +47,42 @@ public class HttpsUtil {
         URL url = new URL(urlStr);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         conn.setHostnameVerifier(new AllowAllHostnameVerifier());
+        conn.setRequestMethod("POST");
+        conn.setConnectTimeout(3000);
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        conn.setUseCaches(false);
+        conn.setInstanceFollowRedirects(true);
+        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+
+//        String request = param.toString();
+        OutputStream out = conn.getOutputStream();
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
+
+        bw.write(param);
+        bw.flush();
+        out.close();
+        bw.close();
+
+        int code = conn.getResponseCode();
+        //If app connect to server successfully, get the response from server.
+        if(code == HttpURLConnection.HTTP_OK){
+            InputStream is = conn.getInputStream();
+            String result = StreamUtil.readStream(is);
+            conn.disconnect();
+            return result;
+        }else {
+            InputStream errorIs = conn.getErrorStream();
+            conn.disconnect();
+            String result = StreamUtil.readStream(errorIs);
+            System.out.println("Server error");
+            return result;
+        }
+    }
+
+    public static String jsonPostWithCA(String urlStr, String param, Context context) throws Exception {
+
+        HttpsURLConnection conn = CustomCAHttpsProvider.getHttpsUrlConnection(urlStr, context);
         conn.setRequestMethod("POST");
         conn.setConnectTimeout(3000);
         conn.setDoOutput(true);

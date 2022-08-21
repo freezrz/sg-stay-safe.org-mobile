@@ -209,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class MyTask extends AsyncTask<String, Void, Void> {
         String resultMsg = "";
-
         @Override
         protected Void doInBackground(String... strings) {
             String email = strings[0];
@@ -220,7 +219,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("idToken", idToken);
                 jsonObject.put("anonymousId", hashEmail);
-                String respStr = HttpsUtil.jsonPost(authURL, jsonObject.toString());
+//                String respStr = HttpsUtil.jsonPost(authURL, jsonObject.toString());
+                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication());
                 Log.i("Auth respStr", respStr);
                 SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
                 if (response.getCode() != SafeResponse.RESPONSE_CODE_SUCCESS) {
