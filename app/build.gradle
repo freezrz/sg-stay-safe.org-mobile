@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -38,4 +38,8 @@ dependencies {
     // Dependency for Google Sign-In
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     implementation 'com.google.code.gson:gson:2.8.9'
+
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:android-core:3.3.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
 }

@@ -3,6 +3,8 @@ package com.iss.team1.safe.checkin.utils;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.android.gms.common.util.Strings;
+import com.google.zxing.common.StringUtils;
 import com.iss.team1.safe.checkin.R;
 
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
@@ -80,7 +82,7 @@ public class HttpsUtil {
         }
     }
 
-    public static String jsonPostWithCA(String urlStr, String param, Context context) throws Exception {
+    public static String jsonPostWithCA(String urlStr, String param, Context context, String token) throws Exception {
 
         HttpsURLConnection conn = CustomCAHttpsProvider.getHttpsUrlConnection(urlStr, context);
         conn.setRequestMethod("POST");
@@ -90,6 +92,9 @@ public class HttpsUtil {
         conn.setUseCaches(false);
         conn.setInstanceFollowRedirects(true);
         conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        if (token != null) {
+            conn.setRequestProperty("Authorization", token);
+        }
 
 //        String request = param.toString();
         OutputStream out = conn.getOutputStream();

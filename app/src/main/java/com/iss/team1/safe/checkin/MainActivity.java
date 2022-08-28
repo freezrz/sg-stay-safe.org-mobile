@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.commit();
             new MyTask().execute(email, idToken);
             updateUI(account);
+            Intent intent = new Intent(this, HomePageActivity.class);
+            startActivityForResult(intent, 1000);
         } catch (Exception e) {
             Log.w(TAG, "handleSignInResult:error", e);
             updateUI(null);
@@ -220,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 jsonObject.put("idToken", idToken);
                 jsonObject.put("anonymousId", hashEmail);
 //                String respStr = HttpsUtil.jsonPost(authURL, jsonObject.toString());
-                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication());
+                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication(), null);
                 Log.i("Auth respStr", respStr);
                 SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
                 if (response.getCode() != SafeResponse.RESPONSE_CODE_SUCCESS) {
