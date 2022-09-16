@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomePageActivity"/>
+        <activity android:name=".HomePageActivity" android:exported="false"/>
         <activity android:name=".ScanningQRCodeActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"

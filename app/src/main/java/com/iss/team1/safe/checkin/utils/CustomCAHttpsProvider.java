@@ -74,7 +74,7 @@ public class CustomCAHttpsProvider {
     private static Certificate readCert(Context context) throws CertificateException, IOException {
 //        int id = context.getResources().getIdentifier("checkin.crt", "raw", context.getPackageName());
         // read certificate resource
-        InputStream caInput = context.getResources().openRawResource(R.raw.checkin);
+        InputStream caInput = context.getResources().openRawResource(R.raw.checin2);
 
         Certificate ca;
         try {

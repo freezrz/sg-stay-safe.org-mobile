@@ -3,12 +3,15 @@ package com.iss.team1.safe.checkin;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,10 +41,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "IdTokenActivity";
     private static final int RC_GET_TOKEN = 9002;
     private static final String authURL = "https://checkin-sg-stay-safe-org.ap-southeast-1.elasticbeanstalk.com/authentication";
+    private static final String authURL2 = "https://checkin.sg-stay-safe.com/authentication";
 
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mIdTokenTextView;
     private Button mRefreshButton;
+
+    private SharedPreferences.Editor sharedPrefsEditor;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // For sample only: make sure there is a valid server client ID.
         validateServerClientID();
+        initSharedPreferences();
 
         // [START configure_signin]
         // Request only the user's ID token, which can be used to identify the
@@ -148,10 +156,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // TODO(developer): send ID Token to server and validate
             Log.i("get ID token: ", idToken);
-            SharedPreferences prefs = getSharedPreferences("safeStore", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("idToken", idToken);
-            editor.commit();
+//            SharedPreferences prefs = getSharedPreferences("safeStore", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = prefs.edit();
+//            editor.putString("idToken", idToken);
+//            editor.commit();
+            savePR(idToken);
             new MyTask().execute(email, idToken);
             updateUI(account);
             Intent intent = new Intent(this, HomePageActivity.class);
@@ -222,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 jsonObject.put("idToken", idToken);
                 jsonObject.put("anonymousId", hashEmail);
 //                String respStr = HttpsUtil.jsonPost(authURL, jsonObject.toString());
-                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication(), null);
+                String respStr = HttpsUtil.jsonPostWithCA(authURL2, jsonObject.toString(), getApplication(), null);
                 Log.i("Auth respStr", respStr);
                 SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
                 if (response.getCode() != SafeResponse.RESPONSE_CODE_SUCCESS) {
@@ -242,5 +251,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast toast = Toast.makeText(context, resultMsg, duration);
             toast.show();
         }
+    }
+
+    private void initSharedPreferences() {
+        String sharedPrefsFile = "ID_TOKEN";
+        KeyGenParameterSpec keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC;
+        String mainKeyAlias = null;
+        try {
+            mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec);
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    sharedPrefsFile,
+                    mainKeyAlias,
+                    getApplicationContext(),
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+
+            sharedPrefsEditor = sharedPreferences.edit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void savePR(String value) {
+        sharedPrefsEditor.putString("safeStore", value);
+        sharedPrefsEditor.apply();
     }
 }
