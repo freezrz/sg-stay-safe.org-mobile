@@ -32,7 +32,6 @@ public class HomePageActivity extends AppCompatActivity {
     private final String[] permissions = new String[]{Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    //创建两个Bitmap,一个放二维码，一个放logo
     private String checkInUrl = "https://checkin-sg-stay-safe-org.ap-southeast-1.elasticbeanstalk.com/";
     private TextView tvCheckinReqult;
 
@@ -40,19 +39,10 @@ public class HomePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-//        tvSaveCode = findViewById(R.id.tv_save_code);
+
         tvCheckinReqult = findViewById(R.id.tv_checkin_result);
 
-//        findViewById(R.id.tv_create_code).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //如果需要logo圆角的话可以对bitmap进行圆角处理或者图片用圆角图片
-//                logoBmp = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
-//                codeBmp = ZXingUtils.createQRImage(url, logoBmp);
-//                ((ImageView) findViewById(R.id.image)).setImageBitmap(codeBmp);
-//                tvSaveCode.setVisibility(codeBmp != null ? View.VISIBLE : View.GONE);
-//            }
-//        });
+
         findViewById(R.id.tv_code).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,12 +59,7 @@ public class HomePageActivity extends AppCompatActivity {
                 }
             }
         });
-//        tvSaveCode.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FileUtil.saveImageToGallery(MainActivity.this, codeBmp);
-//            }
-//        });
+
     }
 
     @Override
@@ -83,10 +68,10 @@ public class HomePageActivity extends AppCompatActivity {
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 String resultText = data.getStringExtra("resultText");
-//                Toast.makeText(this, resultText, Toast.LENGTH_LONG).show();
-                //Call check in api
+
+              
                 new MyTask().execute(resultText);
-//                checkIn(resultText);
+
             }
         }
     }
