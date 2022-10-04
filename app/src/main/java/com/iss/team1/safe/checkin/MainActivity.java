@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String idToken = account.getIdToken();
             String email = account.getEmail();
 
-            // TODO(developer): send ID Token to server and validate
+            
             Log.i("get ID token: ", idToken);
             SharedPreferences prefs = getSharedPreferences("safeStore", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("idToken", idToken);
                 jsonObject.put("anonymousId", hashEmail);
-//                String respStr = HttpsUtil.jsonPost(authURL, jsonObject.toString());
+
                 String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication(), null);
                 Log.i("Auth respStr", respStr);
                 SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
