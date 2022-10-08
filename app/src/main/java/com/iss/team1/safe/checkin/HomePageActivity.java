@@ -46,9 +46,8 @@ public class HomePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-//        tvSaveCode = findViewById(R.id.tv_save_code);
-        tvCheckinReqult = findViewById(R.id.tv_checkin_result);
 
+        tvCheckinReqult = findViewById(R.id.tv_checkin_result);
         findViewById(R.id.tv_code).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,10 +73,10 @@ public class HomePageActivity extends AppCompatActivity {
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 String resultText = data.getStringExtra("resultText");
-//                Toast.makeText(this, resultText, Toast.LENGTH_LONG).show();
-                //Call check in api
+
+              
                 new MyTask().execute(resultText);
-//                checkIn(resultText);
+
             }
         }
     }
