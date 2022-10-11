@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -39,6 +40,7 @@ import com.iss.team1.safe.checkin.camera.thread.DecodeThread;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.
@@ -136,11 +138,8 @@ public void quitSynchronously() {
             // Wait at most half a second; should be enough time, and onPause() will timeout quickly
             decodeThread.join(500L);
         } catch (InterruptedException ie) {
-            logger.error("InterruptedException: ", ie);
+            Log.e(TAG, "quitSynchronously: ", ie);
             Thread.currentThread().interrupt();
-        }
-        catch (ExecutionException ee) {
-            logger.error("ExecutionException: ",ee);
         }
 
         // Be absolutely sure we don't send any queued up messages

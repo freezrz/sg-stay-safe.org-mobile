@@ -25,6 +25,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
 
 @SuppressWarnings("deprecation") // camera APIs
@@ -120,11 +121,8 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
             try {
                 Thread.sleep(AUTO_FOCUS_INTERVAL_MS);
             } catch (InterruptedException e) {
-                logger.error("InterruptedException: ", e);
+                Log.e(TAG, "InterruptedException: ", e);
                 Thread.currentThread().interrupt();
-            }
-            catch (ExecutionException ee) {
-                logger.error("ExecutionException: ",ee);
             }
             start();
             return null;

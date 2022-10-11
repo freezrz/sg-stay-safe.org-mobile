@@ -18,12 +18,14 @@ package com.iss.team1.safe.checkin.camera.thread;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
 import com.iss.team1.safe.checkin.ScanningQRCodeActivity;
 import com.iss.team1.safe.checkin.camera.handler.DecodeHandler;
+import com.iss.team1.safe.checkin.camera.handler.ScanningQRCodeHandler;
 import com.iss.team1.safe.checkin.camera.manager.DecodeFormatManager;
 
 import java.util.Collection;
@@ -31,6 +33,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This thread does all the heavy lifting of decoding the images.
@@ -38,6 +41,8 @@ import java.util.concurrent.CountDownLatch;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class DecodeThread extends Thread {
+
+    private static final String TAG = DecodeThread.class.getSimpleName();
 
     public static final String BARCODE_BITMAP = "barcode_bitmap";
     public static final String BARCODE_SCALED_FACTOR = "barcode_scaled_factor";
@@ -79,11 +84,8 @@ public final class DecodeThread extends Thread {
         try {
             handlerInitLatch.await();
         } catch (InterruptedException ie) {
-            logger.error("InterruptedException: ", ie);
+            Log.e(TAG, "InterruptedException: ", ie);
             Thread.currentThread().interrupt();
-        }
-        catch (ExecutionException ee) {
-            logger.error("ExecutionException: ",ee);
         }
         return handler;
     }
