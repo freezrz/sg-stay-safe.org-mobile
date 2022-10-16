@@ -35,8 +35,7 @@ public class HomePageActivity extends AppCompatActivity {
     private final String[] permissions = new String[]{Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private String checkInUrl = "https://checkin-sg-stay-safe-org.ap-southeast-1.elasticbeanstalk.com/";
-    private String checkInUrl2 = "https://checkin.sg-stay-safe.com/";
+    private String checkInUrl = "https://checkin.sg-stay-safe.com/";
     private TextView tvCheckinReqult;
 
     private SharedPreferences.Editor sharedPrefsEditor;
@@ -118,7 +117,7 @@ public class HomePageActivity extends AppCompatActivity {
 //                String idToken = prefs.getString("idToken", null);
                 String idToken = getPR("safeStore");
                 Log.i("SharedPreferences idToken={}", idToken);
-                respStr = HttpsUtil.jsonPostWithCA(checkInUrl2, requestStr, getApplication(), idToken);
+                respStr = HttpsUtil.jsonPostWithCA(checkInUrl, requestStr, getApplication(), idToken);
                 Log.i("checkin respStr", respStr);
             } catch (Exception e) {
                 e.printStackTrace();

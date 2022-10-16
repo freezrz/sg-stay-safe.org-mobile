@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "IdTokenActivity";
     private static final int RC_GET_TOKEN = 9002;
-    private static final String authURL = "https://checkin-sg-stay-safe-org.ap-southeast-1.elasticbeanstalk.com/authentication";
-    private static final String authURL2 = "https://checkin.sg-stay-safe.com/authentication";
+    private static final String authURL = "https://checkin.sg-stay-safe.com/authentication";
 
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mIdTokenTextView;
@@ -227,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("idToken", idToken);
                 jsonObject.put("anonymousId", hashEmail);
-                String respStr = HttpsUtil.jsonPostWithCA(authURL2, jsonObject.toString(), getApplication(), null);
+                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication(), null);
                 Log.i("Auth respStr", respStr);
                 SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
                 if (response.getCode() != SafeResponse.RESPONSE_CODE_SUCCESS) {
