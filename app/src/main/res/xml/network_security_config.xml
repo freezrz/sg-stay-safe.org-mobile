@@ -3,7 +3,7 @@
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">checkin.sg-stay-safe.com</domain>
         <pin-set expiration="2023-09-04">
-            <pin digest="SHA-256">7VXJbMxZ/LLpjiQrfu20SrNECVO+9QUQszyEWgFyjMk=</pin>
+            <pin digest="SHA-256">18tkPyr2nckv4fgo0dhAkaUtJ2hu2831xlO2SKhq8dg=</pin>
         </pin-set>
     </domain-config>
 </network-security-config>

@@ -27,7 +27,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.iss.team1.safe.checkin.model.SafeResponse;
 import com.iss.team1.safe.checkin.utils.HashUtil;
-import com.iss.team1.safe.checkin.utils.HttpUtil;
 import com.iss.team1.safe.checkin.utils.HttpsUtil;
 import com.iss.team1.safe.checkin.utils.JsonUtil;
 
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Views
-        mIdTokenTextView = findViewById(R.id.detail);
+//        mIdTokenTextView = findViewById(R.id.detail);
         mRefreshButton = findViewById(R.id.button_optional_action);
         mRefreshButton.setText(R.string.refresh_token);
 
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateUI(@Nullable GoogleSignInAccount account) {
         if (account != null) {
-            ((TextView) findViewById(R.id.status)).setText(R.string.signed_in);
+//            ((TextView) findViewById(R.id.status)).setText(R.string.signed_in);
 
             String idToken = account.getIdToken();
             mIdTokenTextView.setText(getString(R.string.id_token_fmt, idToken));
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
             mRefreshButton.setVisibility(View.VISIBLE);
         } else {
-            ((TextView) findViewById(R.id.status)).setText(R.string.signed_out);
+//            ((TextView) findViewById(R.id.status)).setText(R.string.signed_out);
             mIdTokenTextView.setText(getString(R.string.id_token_fmt, "null"));
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
@@ -152,15 +151,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             
             Log.i("get ID token: ", idToken);
-//            SharedPreferences prefs = getSharedPreferences("safeStore", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = prefs.edit();
-//            editor.putString("idToken", idToken);
-//            editor.commit();
             savePR(idToken);
+            savePRUnCrypt(idToken);
             new MyTask().execute(email, idToken);
-            updateUI(account);
+//            updateUI(account);
             Intent intent = new Intent(this, HomePageActivity.class);
-            startActivityForResult(intent, 1000);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         } catch (Exception e) {
             Log.w(TAG, "handleSignInResult:error", e);
             updateUI(null);
@@ -271,5 +268,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void savePR(String value) {
         sharedPrefsEditor.putString("safeStore", value);
         sharedPrefsEditor.apply();
+    }
+
+    private void savePRUnCrypt(String value) {
+        SharedPreferences prefs = getSharedPreferences("safeStore_uncrypt", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("safeStore_uncrypt", value);
+        editor.commit();
     }
 }

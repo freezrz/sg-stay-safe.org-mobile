@@ -1,11 +1,6 @@
 package com.iss.team1.safe.checkin.utils;
 
-import android.app.Application;
 import android.content.Context;
-
-import com.google.android.gms.common.util.Strings;
-import com.google.zxing.common.StringUtils;
-import com.iss.team1.safe.checkin.R;
 
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 
