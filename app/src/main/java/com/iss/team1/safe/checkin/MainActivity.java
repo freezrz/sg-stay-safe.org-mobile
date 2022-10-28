@@ -221,9 +221,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 String hashEmail = HashUtil.hashSha256(email);
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("idToken", idToken);
                 jsonObject.put("anonymousId", hashEmail);
-                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication(), null);
+                String respStr = HttpsUtil.jsonPostWithCA(authURL, jsonObject.toString(), getApplication(), idToken);
                 Log.i("Auth respStr", respStr);
                 SafeResponse response = (SafeResponse) JsonUtil.convertJsonToObj(respStr, SafeResponse.class);
                 if (response.getCode() != SafeResponse.RESPONSE_CODE_SUCCESS) {

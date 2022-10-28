@@ -156,20 +156,17 @@ public class HomePageActivity extends AppCompatActivity implements NavigationVie
         protected Void doInBackground(String... strings) {
             String rawStr = strings[0];
 
-            Log.i("checkin rawStr", rawStr);
-            String jsonStr = HashUtil.deCrypt(rawStr);
-            Log.i("checkin jsonStr", jsonStr);
-            QRStr qrObj = (QRStr) JsonUtil.convertJsonToObj(jsonStr, QRStr.class);
-            if (qrObj == null || TextUtils.isEmpty(qrObj.getSiteId())) {
-                resultMsg = "QR Code is invalid...";
-            }
-            CheckInRequestVo requestVo = new CheckInRequestVo("", qrObj.getSiteId());
+//            String jsonStr = HashUtil.deCrypt(rawStr);
+//            Log.i("checkin jsonStr", jsonStr);
+//            QRStr qrObj = (QRStr) JsonUtil.convertJsonToObj(jsonStr, QRStr.class);
+//            if (qrObj == null || TextUtils.isEmpty(qrObj.getSiteId())) {
+//                resultMsg = "QR Code is invalid...";
+//            }
+            CheckInRequestVo requestVo = new CheckInRequestVo("", rawStr);
             String requestStr = JsonUtil.convertObjToStr(requestVo);
             Log.i("checkin requestStr", requestStr);
             String respStr = null;
             try {
-//                SharedPreferences prefs = getSharedPreferences("safeStore", Context.MODE_PRIVATE);
-//                String idToken = prefs.getString("idToken", null);
                 String idToken = getPR("safeStore");
                 Log.i("SharedPreferences idToken={}", idToken);
                 respStr = HttpsUtil.jsonPostWithCA(checkInUrl, requestStr, getApplication(), idToken);
